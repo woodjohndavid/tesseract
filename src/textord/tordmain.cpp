@@ -385,6 +385,7 @@ void Textord::cleanup_nontext_block(BLOCK *block) {
       C_BLOB_LIST blobs;
       C_BLOB_IT blob_it(&blobs);
       blob_it.add_after_then_move(blob);
+      fprintf(stderr, "new werd in tordmain \n");  // JDWDEBUG
       WERD *word = new WERD(&blobs, 0, nullptr);
       w_it.add_after_then_move(word);
     }

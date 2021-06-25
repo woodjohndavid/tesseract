@@ -131,7 +131,7 @@ char *TessBaseAPI::GetHOCRText(ETEXT_DESC *monitor, int page_number) {
   if (tesseract_ == nullptr || (page_res_ == nullptr && Recognize(monitor) < 0)) {
     return nullptr;
   }
-
+  fprintf(stderr, "hocrrenderer in gethocrtext \n");  // JDWDEBUG
   int lcnt = 1, bcnt = 1, pcnt = 1, wcnt = 1, scnt = 1, tcnt = 1, ccnt = 1;
   int page_id = page_number + 1; // hOCR uses 1-based page numbers.
   bool para_is_ltr = true;       // Default direction is LTR

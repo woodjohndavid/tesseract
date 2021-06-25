@@ -72,6 +72,7 @@ void Tesseract::recog_pseudo_word(PAGE_RES *page_res, TBOX &selection_box) {
  * @param pr_it the page results iterator
  */
 bool Tesseract::recog_interactive(PAGE_RES_IT *pr_it) {
+  fprintf(stderr, "control in recog_interactive \n");  // JDWDEBUG
   WordData word_data(*pr_it);
   SetupWordPassN(2, &word_data);
   // LSTM doesn't run on pass2, but we want to run pass2 for tesseract.
@@ -200,6 +201,7 @@ bool Tesseract::RecogAllWordsPassN(int pass_n, ETEXT_DESC *monitor, PAGE_RES_IT 
   // (eg set_pass1 and set_pass2) and an intermediate adaption pass needs to be
   // added. The results will be significantly different with adaption on, and
   // deterioration will need investigation.
+  fprintf(stderr, "control in recogallwordspassn %i \n", pass_n);  // JDWDEBUG
   pr_it->restart_page();
   for (unsigned w = 0; w < words->size(); ++w) {
     WordData *word = &(*words)[w];
@@ -883,11 +885,11 @@ int Tesseract::RetryWithLanguage(const WordData &word_data, WordRecognizer recog
     new_words.push_back(*in_word);
     *in_word = nullptr;
   }
-  if (debug) {
+  // if (debug) {   JDWDEBUG commented out
     for (int i = 0; i < new_words.size(); ++i) {
       new_words[i]->DebugTopChoice("Lang result");
     }
-  }
+  // }    JDWDEBUG commented out
   // Initial version is a bit of a hack based on better certainty and rating
   // or a dictionary vs non-dictionary word.
   return SelectBestWords(classify_max_rating_ratio, classify_max_certainty_margin, debug,
@@ -1242,6 +1244,7 @@ float Tesseract::ClassifyBlobPlusOutlines(const std::vector<bool> &ok_outlines,
 // best raw choice, and undoing all the work done to fake out the word.
 float Tesseract::ClassifyBlobAsWord(int pass_n, PAGE_RES_IT *pr_it, C_BLOB *blob, std::string &best_str,
                                     float *c2) {
+  fprintf(stderr, "control in classifyblobasword %i \n", pass_n);  // JDWDEBUG
   WERD *real_word = pr_it->word()->word;
   WERD *word = real_word->ConstructFromSingleBlob(real_word->flag(W_BOL), real_word->flag(W_EOL),
                                                   C_BLOB::deep_copy(blob));
@@ -1291,6 +1294,7 @@ float Tesseract::ClassifyBlobAsWord(int pass_n, PAGE_RES_IT *pr_it, C_BLOB *blob
 // If recognition was not successful, tries all available languages until
 // it gets a successful result or runs out of languages. Keeps the best result.
 void Tesseract::classify_word_and_language(int pass_n, PAGE_RES_IT *pr_it, WordData *word_data) {
+fprintf(stderr, "control classify_word_pass call %i \n", pass_n);  // JDWDEBUG
 #ifdef DISABLED_LEGACY_ENGINE
   WordRecognizer recognizer = &Tesseract::classify_word_pass1;
 #else
@@ -1344,10 +1348,12 @@ void Tesseract::classify_word_and_language(int pass_n, PAGE_RES_IT *pr_it, WordD
   if (!best_words.empty()) {
     if (best_words.size() == 1 && !best_words[0]->combination) {
       // Move the best single result to the main word.
+      fprintf(stderr, "control in classify_word_pass before consumewordresults \n");  // JDWDEBUG
       word_data->word->ConsumeWordResults(best_words[0]);
     } else {
       // Words came from LSTM, and must be moved to the PAGE_RES properly.
       word_data->word = best_words.back();
+      fprintf(stderr, "control in classify_word_pass before replacecurrentword \n");  // JDWDEBUG
       pr_it->ReplaceCurrentWord(&best_words);
     }
     ASSERT_HOST(word_data->word->box_word != nullptr);
@@ -1380,6 +1386,7 @@ void Tesseract::classify_word_pass1(const WordData &word_data, WERD_RES **in_wor
       tessedit_ocr_engine_mode == OEM_TESSERACT_LSTM_COMBINED) {
 #endif // def DISABLED_LEGACY_ENGINE
     if (!(*in_word)->odd_size || tessedit_ocr_engine_mode == OEM_LSTM_ONLY) {
+      fprintf(stderr, "control lstmrecognizeword call \n");  // JDWDEBUG
       LSTMRecognizeWord(*block, row, *in_word, out_words);
       if (!out_words->empty()) {
         return; // Successful lstm recognition.

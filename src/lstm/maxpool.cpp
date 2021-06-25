@@ -36,6 +36,7 @@ bool Maxpool::DeSerialize(TFile *fp) {
 // See NetworkCpp for a detailed discussion of the arguments.
 void Maxpool::Forward(bool debug, const NetworkIO &input, const TransposedArray *input_transpose,
                       NetworkScratch *scratch, NetworkIO *output) {
+  fprintf(stderr, "maxpool forward x_scale,y_scale= %i %i \n", x_scale_, y_scale_);  // JDWDEBUG
   output->ResizeScaled(input, x_scale_, y_scale_, no_);
   maxes_.ResizeNoInit(output->Width(), ni_);
   back_map_ = input.stride_map();

@@ -53,6 +53,7 @@ TessdataManager::TessdataManager(FileReader reader)
 void TessdataManager::LoadFileLater(const char *data_file_name) {
   Clear();
   data_file_name_ = data_file_name;
+  fprintf(stderr, "tessdatamanager loadfilelater filename= %s \n", data_file_name);  // JDWDEBUG
 }
 
 #if defined(HAVE_LIBARCHIVE)
@@ -88,6 +89,7 @@ bool TessdataManager::LoadArchiveFile(const char *filename) {
 #endif
 
 bool TessdataManager::Init(const char *data_file_name) {
+  fprintf(stderr, "tessdatamanager init \n");  // JDWDEBUG
   std::vector<char> data;
   if (reader_ == nullptr) {
 #if defined(HAVE_LIBARCHIVE)
@@ -111,6 +113,7 @@ bool TessdataManager::LoadMemBuffer(const char *name, const char *data, int size
   // TODO: This method supports only the proprietary file format.
   Clear();
   data_file_name_ = name;
+  fprintf(stderr, "tessdatamanager loadmembuffer filename= %s \n", name);  // JDWDEBUG
   TFile fp;
   fp.Open(data, size);
   uint32_t num_entries;
@@ -225,6 +228,7 @@ void TessdataManager::Directory() const {
 // Opens the given TFile pointer to the given component type.
 // Returns false in case of failure.
 bool TessdataManager::GetComponent(TessdataType type, TFile *fp) {
+  fprintf(stderr, "tessdatamanager getcomponent type= %i \n", type);  // JDWDEBUG
   if (!is_loaded_ && !Init(data_file_name_.c_str())) {
     return false;
   }

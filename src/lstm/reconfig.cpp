@@ -54,6 +54,7 @@ bool Reconfig::Serialize(TFile *fp) const {
 
 // Reads from the given file. Returns false in case of error.
 bool Reconfig::DeSerialize(TFile *fp) {
+  fprintf(stderr, "reconfig deserialize top x_scale,y_scale,no_= %i %i %i \n", x_scale_, y_scale_, no_);  // JDWDEBUG
   if (!fp->DeSerialize(&x_scale_)) {
     return false;
   }
@@ -61,6 +62,7 @@ bool Reconfig::DeSerialize(TFile *fp) {
     return false;
   }
   no_ = ni_ * x_scale_ * y_scale_;
+  fprintf(stderr, "reconfig deserialize bottom x_scale,y_scale,ni_,no_= %i %i %i %i \n", x_scale_, y_scale_, ni_, no_);  // JDWDEBUG
   return true;
 }
 
@@ -68,6 +70,7 @@ bool Reconfig::DeSerialize(TFile *fp) {
 // See NetworkCpp for a detailed discussion of the arguments.
 void Reconfig::Forward(bool debug, const NetworkIO &input, const TransposedArray *input_transpose,
                        NetworkScratch *scratch, NetworkIO *output) {
+  fprintf(stderr, "reconfig forward x_scale,y_scale= %i %i \n", x_scale_, y_scale_);  // JDWDEBUG
   output->ResizeScaled(input, x_scale_, y_scale_, no_);
   back_map_ = input.stride_map();
   StrideMap::Index dest_index(output->stride_map());

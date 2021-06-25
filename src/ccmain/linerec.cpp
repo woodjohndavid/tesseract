@@ -231,6 +231,12 @@ ImageData *Tesseract::GetRectImage(const TBOX &box, const BLOCK &block, int padd
 void Tesseract::LSTMRecognizeWord(const BLOCK &block, ROW *row, WERD_RES *word,
                                   PointerVector<WERD_RES> *words) {
   TBOX word_box = word->word->bounding_box();
+  // JDWDEBUG START
+  std::string debug_str;
+  debug_str = "linerec lstmrecognizeword box #1 ";
+  word_box.print_to_str(debug_str);
+  fprintf(stderr, "%s \n", debug_str.c_str());
+  // JDWDEBUG END
   // Get the word image - no frills.
   if (tessedit_pageseg_mode == PSM_SINGLE_WORD || tessedit_pageseg_mode == PSM_RAW_LINE) {
     // In single word mode, use the whole image without any other row/word
@@ -245,11 +251,16 @@ void Tesseract::LSTMRecognizeWord(const BLOCK &block, ROW *row, WERD_RES *word,
       word_box.set_top(baseline + row->x_height() + row->ascenders());
     }
   }
+  fprintf(stderr, "linerec imagedata created for lstm \n");  // JDWDEBUG
   ImageData *im_data = GetRectImage(word_box, block, kImagePadding, &word_box);
   if (im_data == nullptr) {
     return;
   }
-
+  // JDWDEBUG START
+  debug_str = "linerec lstmrecognizeword box #2 ";
+  word_box.print_to_str(debug_str);
+  fprintf(stderr, "%s \n", debug_str.c_str());
+  // JDWDEBUG END
   bool do_invert = tessedit_do_invert;
   lstm_recognizer_->RecognizeLine(*im_data, do_invert, classify_debug_level > 0,
                                   kWorstDictCertainty / kCertaintyScale, word_box, words,

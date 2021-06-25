@@ -31,6 +31,7 @@ namespace tesseract {
 // returning false on error.
 bool LoadDataFromFile(const char *filename, std::vector<char> *data) {
   bool result = false;
+  fprintf(stderr, "serialis loaddatafromfile filename= %s \n", filename);  // JDWDEBUG
   FILE *fp = fopen(filename, "rb");
   if (fp != nullptr) {
     fseek(fp, 0, SEEK_END);
@@ -208,6 +209,7 @@ char *TFile::FGets(char *buffer, int buffer_size) {
 }
 
 int TFile::FReadEndian(void *buffer, size_t size, int count) {
+  fprintf(stderr, "serialis freadendian size= %li \n", size);  // JDWDEBUG
   int num_read = FRead(buffer, size, count);
   if (swap_ && size != 1) {
     char *char_buffer = static_cast<char *>(buffer);

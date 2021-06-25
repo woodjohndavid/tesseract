@@ -212,6 +212,7 @@ Image ImageData::GetPix() const {
 // to the image to achieve the target_height.
 Image ImageData::PreScale(int target_height, int max_height, float *scale_factor, int *scaled_width,
                          int *scaled_height, std::vector<TBOX> *boxes) const {
+  fprintf(stderr, "imagedata prescale \n");  // JDWDEBUG
   int input_width = 0;
   int input_height = 0;
   Image src_pix = GetPix();
@@ -248,11 +249,23 @@ Image ImageData::PreScale(int target_height, int max_height, float *scale_factor
     boxes->clear();
     for (auto box : boxes_) {
       box.scale(im_factor);
+      // JDWDEBUG START
+      std::string debug_str;
+      debug_str = "box for image prescale ";
+      box.print_to_str(debug_str);
+      fprintf(stderr, "%s \n", debug_str.c_str());
+      // JDWDEBUG END
       boxes->push_back(box);
     }
     if (boxes->empty()) {
       // Make a single box for the whole image.
       TBOX box(0, 0, im_factor * input_width, target_height);
+      // JDWDEBUG START
+      std::string debug_str;
+      debug_str = "single word box for image prescale ";
+      box.print_to_str(debug_str);
+      fprintf(stderr, "%s \n", debug_str.c_str());
+      // JDWDEBUG END
       boxes->push_back(box);
     }
   }

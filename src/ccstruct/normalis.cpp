@@ -443,6 +443,14 @@ void DENORM::XHeightRange(int unichar_id, const UNICHARSET &unicharset, const TB
     return;
   }
 
+  fprintf(stderr, "normalis xheightrange %i \n", unichar_id);  // JDWDEBUG
+  // JDWDEBUG START
+  std::string debug_str;
+  debug_str = "normalis xheightrange box ";
+  bbox.print_to_str(debug_str);
+  fprintf(stderr, "%s \n", debug_str.c_str());
+  // JDWDEBUG END
+
   // Clip the top and bottom to the limit of normalized feature space.
   int top = ClipToRange<int>(bbox.top(), 0, kBlnCellHeight - 1);
   int bottom = ClipToRange<int>(bbox.bottom(), 0, kBlnCellHeight - 1);

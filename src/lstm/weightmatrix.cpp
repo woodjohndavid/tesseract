@@ -314,11 +314,13 @@ bool WeightMatrix::DeSerializeOld(bool training, TFile *fp) {
 // Asserts that the call matches what we have.
 void WeightMatrix::MatrixDotVector(const double *u, double *v) const {
   assert(!int_mode_);
+  // fprintf(stderr, "weightmatrix MatrixDotVector #1 \n");  // JDWDEBUGOFF
   MatrixDotVectorInternal(wf_, true, false, u, v);
 }
 
 void WeightMatrix::MatrixDotVector(const int8_t *u, double *v) const {
   assert(int_mode_);
+  // fprintf(stderr, "weightmatrix MatrixDotVector #2 \n");  // JDWDEBUGOFF
   if (IntSimdMatrix::intSimdMatrix) {
     IntSimdMatrix::intSimdMatrix->matrixDotVectorFunction(wi_.dim1(), wi_.dim2(), &shaped_w_[0],
                                                           &scales_[0], u, v);

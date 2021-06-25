@@ -17,6 +17,7 @@
 
 #include "stridemap.h"
 #include <cassert> // for assert
+#include <stdio.h>  // JDWDEBUG
 
 namespace tesseract {
 
@@ -129,11 +130,13 @@ void StrideMap::Index::SetTFromIndices() {
 
 // Sets up the stride for the given array of height, width pairs.
 void StrideMap::SetStride(const std::vector<std::pair<int, int>> &h_w_pairs) {
+  fprintf(stderr, "stridemap setstride \n");  // JDWDEBUG
   int max_height = 0;
   int max_width = 0;
   for (const std::pair<int, int> &hw : h_w_pairs) {
     int height = hw.first;
     int width = hw.second;
+    fprintf(stderr, "stridemap setstride height,width= %i %i \n", height, width);  // JDWDEBUG
     heights_.push_back(height);
     widths_.push_back(width);
     if (height > max_height) {
@@ -152,10 +155,14 @@ void StrideMap::SetStride(const std::vector<std::pair<int, int>> &h_w_pairs) {
 // Scales width and height dimensions by the given factors.
 void StrideMap::ScaleXY(int x_factor, int y_factor) {
   for (int &height : heights_) {
+    fprintf(stderr, "stridemap scalexy height before= %i \n", height);  // JDWDEBUG
     height /= y_factor;
+    fprintf(stderr, "stridemap scalexy height after= %i \n", height);  // JDWDEBUG
   }
   for (int &width : widths_) {
+    fprintf(stderr, "stridemap scalexy width before= %i \n", width);  // JDWDEBUG
     width /= x_factor;
+    fprintf(stderr, "stridemap scalexy width after= %i \n", width);  // JDWDEBUG
   }
   shape_[FD_HEIGHT] /= y_factor;
   shape_[FD_WIDTH] /= x_factor;
@@ -164,6 +171,7 @@ void StrideMap::ScaleXY(int x_factor, int y_factor) {
 
 // Reduces width to 1, across the batch, whatever the input size.
 void StrideMap::ReduceWidthTo1() {
+  fprintf(stderr, "stridemap reducewidthto1 \n");  // JDWDEBUG
   widths_.assign(widths_.size(), 1);
   shape_[FD_WIDTH] = 1;
   ComputeTIncrements();

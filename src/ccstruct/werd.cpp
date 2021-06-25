@@ -71,6 +71,12 @@ WERD::WERD(C_BLOB_LIST *blob_list, uint8_t blank_count, const char *text)
     return;
   }
   for (start_it.mark_cycle_pt(); !start_it.cycled_list(); start_it.forward()) {
+    // JDWDEBUG START
+    std::string debug_str;
+    debug_str = "cblob adding in werd option 1 ";
+    start_it.data()->bounding_box().print_to_str(debug_str);
+    fprintf(stderr, "%s \n", debug_str.c_str());
+    // JDWDEBUG END
     bool reject_blob = false;
     bool blob_inverted;
 
@@ -81,6 +87,12 @@ WERD::WERD(C_BLOB_LIST *blob_list, uint8_t blank_count, const char *text)
       reject_blob = c_outline_it.data()->flag(COUT_INVERSE) != blob_inverted;
     }
     if (reject_blob) {
+      // JDWDEBUG START
+      std::string debug_str;
+      debug_str = "cblob rejected in werd option 1 ";
+      start_it.data()->bounding_box().print_to_str(debug_str);
+      fprintf(stderr, "%s \n", debug_str.c_str());
+      // JDWDEBUG END
       rej_cblob_it.add_after_then_move(start_it.extract());
     } else {
       if (blob_inverted) {
@@ -100,6 +112,12 @@ WERD::WERD(C_BLOB_LIST *blob_list, uint8_t blank_count, const char *text)
   for (start_it.mark_cycle_pt(); !start_it.cycled_list(); start_it.forward()) {
     c_outline_it.set_to_list(start_it.data()->out_list());
     if (c_outline_it.data()->flag(COUT_INVERSE) != flags[W_INVERSE]) {
+      // JDWDEBUG START
+      std::string debug_str;
+      debug_str = "cblob rejected in werd option 1 ";
+      start_it.data()->bounding_box().print_to_str(debug_str);
+      fprintf(stderr, "%s \n", debug_str.c_str());
+      // JDWDEBUG END
       rej_cblob_it.add_after_then_move(start_it.extract());
     }
   }
@@ -119,6 +137,12 @@ WERD::WERD(C_BLOB_LIST *blob_list, ///< In word order
   C_BLOB_IT end_it = blob_list;   // another
 
   while (!end_it.at_last()) {
+    // JDWDEBUG START
+    std::string debug_str;
+    debug_str = "cblob added to werd option 2 ";
+    end_it.data()->bounding_box().print_to_str(debug_str);
+    fprintf(stderr, "%s \n", debug_str.c_str());
+    // JDWDEBUG END
     end_it.forward(); // move to last
   }
   (reinterpret_cast<C_BLOB_LIST *>(&cblobs))->assign_to_sublist(&start_it, &end_it);
@@ -133,6 +157,7 @@ WERD *WERD::ConstructFromSingleBlob(bool bol, bool eol, C_BLOB *blob) {
   C_BLOB_LIST temp_blobs;
   C_BLOB_IT temp_it(&temp_blobs);
   temp_it.add_after_then_move(blob);
+  fprintf(stderr, "new werd in werd constructfromsingleblob \n");  // JDWDEBUG
   WERD *blob_word = new WERD(&temp_blobs, this);
   blob_word->set_flag(W_BOL, bol);
   blob_word->set_flag(W_EOL, eol);
@@ -167,9 +192,21 @@ TBOX WERD::restricted_bounding_box(bool upper_dots, bool lower_dots) const {
   for (it.mark_cycle_pt(); !it.cycled_list(); it.forward()) {
     TBOX dot_box = it.data()->bounding_box();
     if ((upper_dots || dot_box.bottom() <= top) && (lower_dots || dot_box.top() >= bottom)) {
+      // JDWDEBUG START
+      std::string debug_str;
+      debug_str = "iffy blob for building twerd restricted box ";
+      dot_box.print_to_str(debug_str);
+      fprintf(stderr, "%s \n", debug_str.c_str());
+      // JDWDEBUG END
       box += dot_box;
     }
   }
+  // JDWDEBUG START
+  std::string debug_str;
+  debug_str = "twerd restricted box ";
+  box.print_to_str(debug_str);
+  fprintf(stderr, "%s \n", debug_str.c_str());
+  // JDWDEBUG END
   return box;
 }
 
@@ -179,8 +216,20 @@ TBOX WERD::true_bounding_box() const {
   // This is a read-only iteration of the good blobs.
   C_BLOB_IT it(const_cast<C_BLOB_LIST *>(&cblobs));
   for (it.mark_cycle_pt(); !it.cycled_list(); it.forward()) {
+    // JDWDEBUG START
+    std::string debug_str;
+    debug_str = "good blob for building twerd true box ";
+    it.data()->bounding_box().print_to_str(debug_str);
+    fprintf(stderr, "%s \n", debug_str.c_str());
+    // JDWDEBUG END
     box += it.data()->bounding_box();
   }
+  // JDWDEBUG START
+  std::string debug_str;
+  debug_str = "twerd true box ";
+  box.print_to_str(debug_str);
+  fprintf(stderr, "%s \n", debug_str.c_str());
+  // JDWDEBUG END
   return box;
 }
 
@@ -469,6 +518,7 @@ WERD *WERD::ConstructWerdWithNewBlobs(C_BLOB_LIST *all_blobs, C_BLOB_LIST *orpha
   // New blobs are ready. Create a new werd object with these.
   WERD *new_werd = nullptr;
   if (!new_werd_blobs.empty()) {
+    fprintf(stderr, "new werd in werd constructwerdwithnewblobs \n");  // JDWDEBUG
     new_werd = new WERD(&new_werd_blobs, this);
   } else {
     // Add the blobs back to this word so that it can be reused.

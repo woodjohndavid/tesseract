@@ -977,6 +977,7 @@ the gap between the word being built and the next one. */
                               fuzzy_non, prev_gap_was_a_space, break_at_next_gap) ||
             box_it.at_first()) {
           /* Form a new word out of the blobs collected */
+          fprintf(stderr, "new werd in tospace 1 \n");  // JDWDEBUG
           word = new WERD(&cblobs, prev_blanks, nullptr);
           word_count++;
           word_it.add_after_then_move(word);
@@ -1155,6 +1156,7 @@ ROW *Textord::make_blob_words(TO_ROW *row,    // row to make
       blob_box = bblob->bounding_box();
 
       if (!bblob->joined_to_prev() && !cblobs.empty()) {
+        fprintf(stderr, "new werd in tospace 2 \n");  // JDWDEBUG
         word = new WERD(&cblobs, 1, nullptr);
         word_count++;
         word_it.add_after_then_move(word);

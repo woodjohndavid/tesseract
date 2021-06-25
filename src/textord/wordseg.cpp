@@ -81,6 +81,7 @@ void make_single_word(bool one_blob, TO_ROW_LIST *rows, ROW_LIST *real_rows) {
     ROW *real_row =
         new ROW(row, static_cast<int16_t>(row->kern_size), static_cast<int16_t>(row->space_size));
     WERD_IT word_it(real_row->word_list());
+    fprintf(stderr, "new werd in wordseg 1 \n");  // JDWDEBUG
     WERD *word = new WERD(&cblobs, 0, nullptr);
     word->set_flag(W_BOL, true);
     word->set_flag(W_EOL, true);
@@ -588,6 +589,7 @@ WERD *make_real_word(BLOBNBOX_IT *box_it, // iterator
     blanks = 1;
   }
 
+  fprintf(stderr, "new werd in wordseg 2 \n");  // JDWDEBUG
   auto word = new WERD(&cblobs, blanks, nullptr);
 
   if (bol) {

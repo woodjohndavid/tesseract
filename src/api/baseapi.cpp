@@ -409,6 +409,7 @@ int TessBaseAPI::Init(const char *data, int data_size, const char *language, Ocr
     }
     TessdataManager mgr(reader_);
     if (data_size != 0) {
+      fprintf(stderr, "baseapi loadmembuffer call language= %s \n", language);  // JDWDEBUG
       mgr.LoadMemBuffer(language, data, data_size);
     }
     if (tesseract_->init_tesseract(datapath.c_str(), output_file_.c_str(), language, oem, configs,

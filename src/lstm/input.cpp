@@ -80,6 +80,7 @@ bool Input::Backward(bool debug, const NetworkIO &fwd_deltas, NetworkScratch *sc
 /* static */
 Image Input::PrepareLSTMInputs(const ImageData &image_data, const Network *network, int min_width,
                               TRand *randomizer, float *image_scale) {
+  fprintf(stderr, "input preparelstminputs imagedata used to make pix \n");  // JDWDEBUG
   // Note that NumInputs() is defined as input image height.
   int target_height = network->NumInputs();
   int width, height;
@@ -106,6 +107,7 @@ Image Input::PrepareLSTMInputs(const ImageData &image_data, const Network *netwo
 /* static */
 void Input::PreparePixInput(const StaticShape &shape, const Image pix, TRand *randomizer,
                             NetworkIO *input) {
+  fprintf(stderr, "input preparepixinput \n");  // JDWDEBUG
   bool color = shape.depth() == 3;
   Image var_pix = pix;
   int depth = pixGetDepth(var_pix);

@@ -168,6 +168,7 @@ ROW *fixed_pitch_words( // find lines
         if (blanks < 1 && word != nullptr && !word->flag(W_REP_CHAR)) {
           blanks = 1;
         }
+        fprintf(stderr, "new werd in fpchop 1 \n");  // JDWDEBUG
         word = new WERD(&cblobs, blanks, nullptr);
         cblob_it.set_to_list(&cblobs);
         word->set_flag(W_DONT_CHOP, true);
@@ -190,6 +191,7 @@ ROW *fixed_pitch_words( // find lines
     }
   }
   if (!cblob_it.empty()) {
+    fprintf(stderr, "new werd in fpchop2 \n");  // JDWDEBUG
     word = new WERD(&cblobs, blanks, nullptr);
     word->set_flag(W_DONT_CHOP, true);
     word_it.add_after_then_move(word);

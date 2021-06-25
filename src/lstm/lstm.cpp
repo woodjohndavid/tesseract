@@ -293,12 +293,16 @@ void LSTM::Forward(bool debug, const NetworkIO &input, const TransposedArray *in
   input_map_ = input.stride_map();
   input_width_ = input.Width();
   if (softmax_ != nullptr) {
+    fprintf(stderr, "lstm forward softmax resize= %i \n", no_);  // JDWDEBUG
     output->ResizeFloat(input, no_);
   } else if (type_ == NT_LSTM_SUMMARY) {
+    fprintf(stderr, "lstm forward summary resize= %i \n", no_);  // JDWDEBUG
     output->ResizeXTo1(input, no_);
   } else {
+    fprintf(stderr, "lstm forward regular resize= %i \n", no_);  // JDWDEBUG
     output->Resize(input, no_);
   }
+  fprintf(stderr, "lstm forward outputwidth= %i \n", output->Width());  // JDWDEBUG
   ResizeForward(input);
   // Temporary storage of forward computation for each gate.
   NetworkScratch::FloatVec temp_lines[WT_COUNT];
@@ -462,6 +466,7 @@ void LSTM::Forward(bool debug, const NetworkIO &input, const TransposedArray *in
       } else {
         softmax_->ForwardTimeStep(curr_output, t, softmax_output);
       }
+      // fprintf(stderr, "lstm forward writetimestep call softmax \n");  // JDWDEBUGOFF
       output->WriteTimeStep(t, softmax_output);
       if (type_ == NT_LSTM_SOFTMAX_ENCODED) {
         CodeInBinary(no_, nf_, softmax_output);
@@ -469,10 +474,12 @@ void LSTM::Forward(bool debug, const NetworkIO &input, const TransposedArray *in
     } else if (type_ == NT_LSTM_SUMMARY) {
       // Output only at the end of a row.
       if (src_index.IsLast(FD_WIDTH)) {
+        // fprintf(stderr, "lstm forward writetimestep call summary \n");  // JDWDEBUGOFF
         output->WriteTimeStep(dest_index.t(), curr_output);
         dest_index.Increment();
       }
     } else {
+      // fprintf(stderr, "lstm forward writetimestep call regular \n");  // JDWDEBUGOFF
       output->WriteTimeStep(t, curr_output);
     }
     // Save states for use by the 2nd dimension only if needed.

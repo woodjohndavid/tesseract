@@ -662,6 +662,7 @@ void Tesseract::break_noisiest_blob_word(WERD_RES_LIST &words) {
   start_of_noise_blob = blob_it.data()->bounding_box().left();
   delete blob_it.extract(); // throw out noise blob
 
+  fprintf(stderr, "new werd in fixspace \n");  // JDWDEBUG
   new_word = new WERD(&new_blob_list, word_res->word);
   new_word->set_flag(W_EOL, false);
   word_res->word->set_flag(W_BOL, false);

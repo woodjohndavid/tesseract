@@ -357,6 +357,7 @@ void WERD_RES::SetupFake(const UNICHARSET &unicharset_in) {
     int blob_id = 0;
     for (b_it.mark_cycle_pt(); !b_it.cycled_list(); b_it.forward()) {
       TBOX box = b_it.data()->bounding_box();
+      fprintf(stderr, "pageres setupfake before insertbox \n");  // JDWDEBUG
       box_word->InsertBox(box_word->length(), box);
       fake_choices[blob_id++] = new BLOB_CHOICE;
     }
@@ -1416,6 +1417,7 @@ void PAGE_RES_IT::ReplaceCurrentWord(tesseract::PointerVector<WERD_RES> *words) 
         // Use the original box as a back-up.
         blob_box = MoveAndClipBlob(&fake_b_it, &dest_it, clip_box);
       }
+      fprintf(stderr, "pageres replacecurrentword before insertbox\n");  // JDWDEBUG
       box_word->InsertBox(i, blob_box);
     }
     delete word_w->box_word;

@@ -249,6 +249,7 @@ void LSTMRecognizer::RecognizeLine(const ImageData &image_data, bool invert, boo
   NetworkIO outputs;
   float scale_factor;
   NetworkIO inputs;
+  fprintf(stderr, "lstmrecognizer recognizeline first version imagedata used #1 \n");  // JDWDEBUG
   if (!RecognizeLine(image_data, invert, debug, false, false, &scale_factor, &inputs, &outputs)) {
     return;
   }
@@ -256,6 +257,7 @@ void LSTMRecognizer::RecognizeLine(const ImageData &image_data, bool invert, boo
     search_ = new RecodeBeamSearch(recoder_, null_char_, SimpleTextOutput(), dict_);
   }
   search_->excludedUnichars.clear();
+  fprintf(stderr, "lstmrecognizer recognizeline decode call #1 \n");  // JDWDEBUG
   search_->Decode(outputs, kDictRatio, kCertOffset, worst_dict_cert, &GetUnicharset(),
                   lstm_choice_mode);
   search_->ExtractBestPathAsWords(line_box, scale_factor, debug, &GetUnicharset(), words,
@@ -267,6 +269,7 @@ void LSTMRecognizer::RecognizeLine(const ImageData &image_data, bool invert, boo
                                     &GetUnicharset(), lstm_choice_mode);
       search_->extractSymbolChoices(&GetUnicharset());
     }
+    fprintf(stderr, "lstmrecognizer recognizeline segmenttimestepsbycharacters call \n");  // JDWDEBUG
     search_->segmentTimestepsByCharacters();
     unsigned char_it = 0;
     for (int i = 0; i < words->size(); ++i) {
@@ -321,6 +324,7 @@ bool LSTMRecognizer::RecognizeLine(const ImageData &image_data, bool invert, boo
   // This ensures consistent recognition results.
   SetRandomSeed();
   int min_width = network_->XScaleFactor();
+  fprintf(stderr, "lstmrecognizer recognizeline second version imagedata used #1 \n");  // JDWDEBUG
   Image pix = Input::PrepareLSTMInputs(image_data, network_, min_width, &randomizer_, scale_factor);
   if (pix == nullptr) {
     tprintf("Line cannot be recognized!!\n");
@@ -528,6 +532,7 @@ void LSTMRecognizer::LabelsViaReEncode(const NetworkIO &output, std::vector<int>
   if (search_ == nullptr) {
     search_ = new RecodeBeamSearch(recoder_, null_char_, SimpleTextOutput(), dict_);
   }
+  fprintf(stderr, "lstmrecognizer decode call #2 \n");  // JDWDEBUG
   search_->Decode(output, 1.0, 0.0, RecodeBeamSearch::kMinCertainty, nullptr);
   search_->ExtractBestPathAsLabels(labels, xcoords);
 }

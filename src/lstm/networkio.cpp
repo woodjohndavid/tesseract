@@ -49,8 +49,10 @@ void NetworkIO::ResizeToMap(bool int_mode, const StrideMap &stride_map, int num_
   stride_map_ = stride_map;
   int_mode_ = int_mode;
   if (int_mode_) {
+    fprintf(stderr, "networkio resize call int mode stridemapwidth= %i \n", stride_map.Width());  // JDWDEBUG
     i_.ResizeNoInit(stride_map.Width(), num_features, GetPadding(num_features));
   } else {
+    fprintf(stderr, "networkio resize call float mode stridemapwidth= %i \n", stride_map.Width());  // JDWDEBUG
     f_.ResizeNoInit(stride_map.Width(), num_features);
   }
   ZeroInvalidElements();
@@ -160,6 +162,7 @@ static void ComputeBlackWhite(Image pix, float *black, float *white) {
 // If the image width doesn't match the shape, the image is truncated or padded
 // with noise to match.
 void NetworkIO::FromPix(const StaticShape &shape, const Image pix, TRand *randomizer) {
+  fprintf(stderr, "networkio frompix \n");  // JDWDEBUG
   std::vector<Image> pixes(1, pix);
   FromPixes(shape, pixes, randomizer);
 }
@@ -169,6 +172,7 @@ void NetworkIO::FromPix(const StaticShape &shape, const Image pix, TRand *random
 // truncated or padded with noise to match.
 void NetworkIO::FromPixes(const StaticShape &shape, const std::vector<Image> &pixes,
                           TRand *randomizer) {
+  fprintf(stderr, "networkio frompixes \n");  // JDWDEBUG
   int target_height = shape.height();
   int target_width = shape.width();
   std::vector<std::pair<int, int>> h_w_pairs;
